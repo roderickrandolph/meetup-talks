@@ -1,6 +1,6 @@
 - name: ':hammer: Build'
   command: 'docker build -t tripler/tracker .'
-- name: ':shipit Push'
+- name: ':shipit: Push'
   command: 'docker push tripler/tracker'
 - block
 - name: ':rocket: Deploy'
