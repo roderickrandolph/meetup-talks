@@ -6,4 +6,4 @@
 - name: ':rocket: Deploy'
   command: 'cd terraform && make get && make deploy'
   env:
-    DOCKER_CERT_PATH: '$HOME/tripler-tracker/terraform/certificates/client'
+    DOCKER_CERT_PATH: $HOME/tripler-tracker/terraform/certificates/client
