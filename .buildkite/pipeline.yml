@@ -1,8 +1,7 @@
 - name: ':hammer: Build'
-  command: 'docker build -t tripler/tracker .'
-  command: 'cd terraform && terraform validate'
+  command: 'docker build -t tripler/tracker . && cd terraform && terraform validate'
 - name: ':shipit: Push'
   command: 'docker push tripler/tracker'
 - block
 - name: ':rocket: Deploy'
-  command: 'cd terraform && make deploy'
+  command: 'cd terraform && make get && make deploy'
