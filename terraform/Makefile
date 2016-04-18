@@ -74,5 +74,5 @@ show: _run_tf ## Inspect Terraform state or plan
 deploy: _remote_tf ## Deploy containers onto Swarm cluster
 	@NEW_CONTAINER_PORT=$$(python -c 'import random; print random.randint(1024,65535)'); \
 		echo "new container port: $$NEW_CONTAINER_PORT"; \
-		terraform plan -target module.docker_containers -var "containers_host_port=$$NEW_CONTAINER_PORT" -out $$TF_PLAN && \
+		terraform plan -target module.docker_containers -var "containers_host_port=$$NEW_CONTAINER_PORT" -out $(TERRAFORM_PLAN_FILE) && \
 		terraform apply $(TERRAFORM_PLAN_FILE) && rm $(TERRAFORM_PLAN_FILE) \
