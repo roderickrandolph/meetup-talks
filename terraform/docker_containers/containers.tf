@@ -1,6 +1,5 @@
 provider "docker" {
-    host      = "${var.docker_host}"
-    cert_path = "${var.docker_cert_path}"
+    host = "${var.docker_host}"
 }
 
 resource "docker_image" "docker_image" {

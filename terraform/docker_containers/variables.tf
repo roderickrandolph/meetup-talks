@@ -4,6 +4,7 @@ variable "docker_host" {
 
 variable "docker_cert_path" {
     description = "Path to a directory with certificate information for connecting to the Docker host via TLS"
+    default = ""
 }
 
 variable "image" {
