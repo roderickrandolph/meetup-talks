@@ -67,7 +67,7 @@ module "docker_containers" {
     container_port   = "${var.containers_port}"
     host_port        = "${var.containers_host_port}"
     docker_host      = "${module.swarm_managers.docker_address}"
-    docker_cert_path = "${module.certificates.client_certs_path}"
+    docker_cert_path = "${path.module}/certificates/client"
     subnets          = "${module.vpc.public_subnet_ids}"
     security_groups  = "${module.vpc.security_group_id}"
     app_domain_name  = "tracker.TripleR.tech"
