@@ -56,10 +56,10 @@ module "swarm_cluster" {
     swarm_node_cert_pem = "${module.certificates.swarm_node_cert_pem}"
 
     security_groups = "${module.vpc.security_group_id}"
-    //load_balancers  = "${module.docker_containers.elb_name}"
+    load_balancers  = "${module.docker_containers.elb_name}"
 }
 
-/*module "docker_containers" {
+module "docker_containers" {
     source = "docker_containers"
 
     image            = "tripler/tracker:latest"
@@ -75,4 +75,4 @@ module "swarm_cluster" {
 
 output "app_address" {
     value = "${module.docker_containers.dns_name}"
-}*/
+}
