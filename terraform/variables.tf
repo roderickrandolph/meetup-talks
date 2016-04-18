@@ -2,16 +2,8 @@ variable "aws_region" {
     default = "us-east-1"
 }
 
-variable "swarm_manager_dns_domain_name" {
-    default = "swarm.tripler.tech"
-}
-
-variable "app_dns_domain_name" {
-    default = "tracker.tripler.tech"
-}
-
-variable "containers_count" {
-    default = 5
+variable "ami" {
+    default = "ami-08111162" # Amazon Linux AMI (HVM / 64-bit)
 }
 
 variable "containers_port" {
@@ -20,8 +12,4 @@ variable "containers_port" {
 
 variable "containers_host_port" {
     default = 8080
-}
-
-variable "app_load_balancers" {
-    default = "app-elb,"
 }

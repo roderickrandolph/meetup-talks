@@ -40,3 +40,7 @@ echo "${tls_locally_signed_cert.client_cert.cert_pem}" > ${path.module}/client/c
 EOF
     }
 }
+
+output "client_certs_path" {
+    value = "${path.module}/client"
+}

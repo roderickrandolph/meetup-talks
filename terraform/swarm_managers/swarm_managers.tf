@@ -1,23 +1,31 @@
+resource "template_file" "swarm_manager" {
+    template = "${file(concat(path.module, "/cloud-config.yml"))}"
+
+    vars {
+        ca_pem    = "${var.ca_pem}"
+        consul_ip = "${var.consul_ip}"
+
+        swarm_manager_key_pem  = "${var.swarm_manager_key_pem}"
+        swarm_manager_cert_pem = "${var.swarm_manager_cert_pem}"
+    }
+
+    lifecycle {
+        create_before_destroy = true
+    }
+}
+
 resource "aws_instance" "swarm_manager" {
-    count           = 3
-    ami             = "ami-08111162" # Amazon Linux AMI (HVM / 64-bit)
-    key_name        = "butterfinger"
+    count           = "${var.server_count}"
+    ami             = "${var.ami}"
     instance_type   = "t2.nano"
     security_groups = ["${compact(split(",", var.security_groups))}"]
     subnet_id       = "${element(compact(split(",", var.subnets)), count.index)}"
     private_ip      = "${cidrhost(element(compact(split(",", var.subnet_cidrs)), count.index), 4)}"
-    user_data       = "${var.user_data}"
+    user_data       = "${template_file.swarm_manager.rendered}"
 
     tags {
         Name = "swarm-manager${count.index}"
     }
-}
-
-resource "aws_eip" "swarm_manager_eip" {
-    count = 3
-    vpc   = true
-
-    instance = "${element(aws_instance.swarm_manager.*.id, count.index)}"
 }
 
 resource "aws_elb" "swarm_manager_elb" {

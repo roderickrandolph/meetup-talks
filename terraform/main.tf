@@ -2,74 +2,77 @@ provider "aws" {
     region = "${var.aws_region}"
 }
 
-module "certs" {
-    source = "certs"
+module "certificates" {
+    source = "certificates"
 }
 
 module "vpc" {
-    source     = "vpc"
-    aws_region = "${var.aws_region}"
+    source = "vpc"
+
+    subnet_count = 3
+    aws_region   = "${var.aws_region}"
 }
 
-module "cloud_init" {
-    source    = "cloud_init"
-    consul_ip = "${module.swarm_managers.consul_ip}"
-    ca_pem    = "${module.certs.ca_cert_pem}"
+module "consul_servers" {
+    source = "consul_servers"
 
-    swarm_node_key_pem  = "${module.certs.swarm_node_key_pem}"
-    swarm_node_cert_pem = "${module.certs.swarm_node_cert_pem}"
-
-    swarm_manager_key_pem  = "${module.certs.swarm_manager_key_pem}"
-    swarm_manager_cert_pem = "${module.certs.swarm_manager_cert_pem}"
+    server_count    = 3
+    ami             = "${var.ami}"
+    subnets         = "${module.vpc.public_subnet_ids}"
+    subnet_cidrs    = "${module.vpc.public_subnet_cidr_blocks}"
+    security_groups = "${module.vpc.security_group_id}"
 }
 
 module "swarm_managers" {
-    source    = "swarm_managers"
-    user_data = "${module.cloud_init.swarm_manager_rendered}"
-    subnets   = "${module.vpc.public_subnet_ids}"
+    source = "swarm_managers"
 
+    server_count    = 3
+    ami             = "${var.ami}"
+    subnets         = "${module.vpc.public_subnet_ids}"
     subnet_cidrs    = "${module.vpc.public_subnet_cidr_blocks}"
     security_groups = "${module.vpc.security_group_id}"
-    dns_domain_name = "${var.swarm_manager_dns_domain_name}"
+    dns_domain_name = "swarm.TripleR.tech"
+    consul_ip       = "${module.consul_servers.consul_ip}"
+    ca_pem          = "${module.certificates.ca_cert_pem}"
+
+    swarm_manager_key_pem  = "${module.certificates.swarm_manager_key_pem}"
+    swarm_manager_cert_pem = "${module.certificates.swarm_manager_cert_pem}"
 }
 
 output "swarm_manager_docker_address" {
     value = "${module.swarm_managers.docker_address}"
 }
 
-resource "aws_dynamodb_table" "tripler_tracker" {
-    name     = "TripleRTracker"
-    hash_key = "IPAddress"
-
-    attribute {
-        name = "IPAddress"
-        type = "S"
-    }
-
-    read_capacity  = 10
-    write_capacity = 10
-}
-
 module "swarm_cluster" {
-    source    = "swarm_cluster"
-    user_data = "${module.cloud_init.swarm_node_rendered}"
-    subnets   = "${module.vpc.public_subnet_ids}"
+    source = "swarm_cluster"
+
+    server_count = 5
+    ami          = "${var.ami}"
+    subnets      = "${module.vpc.public_subnet_ids}"
+    consul_ip    = "${module.consul_servers.consul_ip}"
+    ca_pem       = "${module.certificates.ca_cert_pem}"
+
+    swarm_node_key_pem  = "${module.certificates.swarm_node_key_pem}"
+    swarm_node_cert_pem = "${module.certificates.swarm_node_cert_pem}"
 
     security_groups = "${module.vpc.security_group_id}"
-    load_balancers  = "${var.app_load_balancers}"
+    //load_balancers  = "${module.docker_containers.elb_name}"
 }
 
-module "containers" {
-    source          = "containers"
-    image           = "tripler/tracker:latest"
-    container_count = "${var.containers_count}"
-    container_port  = "${var.containers_port}"
-    host_port       = "${var.containers_host_port}"
-    subnets         = "${module.vpc.public_subnet_ids}"
-    security_groups = "${module.vpc.security_group_id}"
-    dns_domain_name = "${var.app_dns_domain_name}"
+/*module "docker_containers" {
+    source = "docker_containers"
+
+    image            = "tripler/tracker:latest"
+    container_count  = 5
+    container_port   = "${var.containers_port}"
+    host_port        = "${var.containers_host_port}"
+    docker_host      = "${module.swarm_managers.docker_address}"
+    docker_cert_path = "${module.certificates.client_certs_path}"
+    subnets          = "${module.vpc.public_subnet_ids}"
+    security_groups  = "${module.vpc.security_group_id}"
+    app_domain_name  = "tracker.TripleR.tech"
 }
 
 output "app_address" {
-    value = "${module.containers.app_dns_name}"
-}
+    value = "${module.docker_containers.dns_name}"
+}*/

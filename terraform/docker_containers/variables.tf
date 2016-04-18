@@ -1,3 +1,11 @@
+variable "docker_host" {
+    description = "This is the address to the Docker host"
+}
+
+variable "docker_cert_path" {
+    description = "Path to a directory with certificate information for connecting to the Docker host via TLS"
+}
+
 variable "image" {
     description = "The name of the docker image"
 }
@@ -22,6 +30,6 @@ variable "security_groups" {
     description = "List of comma delimited security group ids"
 }
 
-variable "dns_domain_name" {
+variable "app_domain_name" {
     description = "A custom domain name to create as a DNS alias to the application load balancer"
 }

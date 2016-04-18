@@ -1,9 +1,24 @@
+resource "template_file" "swarm_node" {
+    template = "${file(concat(path.module, "/cloud-config.yml"))}"
+
+    vars {
+        ca_pem    = "${var.ca_pem}"
+        consul_ip = "${var.consul_ip}"
+
+        swarm_node_key_pem  = "${var.swarm_node_key_pem}"
+        swarm_node_cert_pem = "${var.swarm_node_cert_pem}"
+    }
+
+    lifecycle {
+        create_before_destroy = true
+    }
+}
+
 resource "aws_launch_configuration" "swarm_cluster_lc" {
     name_prefix   = "swarm-cluster-lc-"
-    image_id      = "ami-08111162" # Amazon Linux AMI (HVM / 64-bit)
+    image_id      = "${var.ami}"
     instance_type = "t2.nano"
-    user_data     = "${var.user_data}"
-    key_name      = "butterfinger"
+    user_data     = "${template_file.swarm_node.rendered}"
 
     security_groups      = ["${compact(split(",", var.security_groups))}"]
     iam_instance_profile = "arn:aws:iam::154386456226:instance-profile/tripler_tracker_role"
@@ -15,9 +30,9 @@ resource "aws_launch_configuration" "swarm_cluster_lc" {
 
 resource "aws_autoscaling_group" "swarm_cluster_asg" {
     name             = "swarm-cluster-asg"
-    max_size         = 5
-    min_size         = 5
-    desired_capacity = 5
+    max_size         = "${var.server_count}"
+    min_size         = "${var.server_count}"
+    desired_capacity = "${var.server_count}"
     force_delete     = true
 
     vpc_zone_identifier  = ["${compact(split(",", var.subnets))}"]
@@ -28,7 +43,7 @@ resource "aws_autoscaling_group" "swarm_cluster_asg" {
     tag {
         key   = "Name"
         value = "swarm-node"
-        
+
         propagate_at_launch = true
     }
 }
