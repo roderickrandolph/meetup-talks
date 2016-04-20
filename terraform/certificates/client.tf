@@ -34,6 +34,7 @@ resource "null_resource" "generate_client_certs" {
 
     provisioner "local-exec" {
         command = <<EOF
+mkdir -p ${path.module}/client
 echo "${tls_self_signed_cert.ca_cert.cert_pem}"        > ${path.module}/client/ca.pem
 echo "${tls_private_key.client_key.private_key_pem}"   > ${path.module}/client/key.pem
 echo "${tls_locally_signed_cert.client_cert.cert_pem}" > ${path.module}/client/cert.pem

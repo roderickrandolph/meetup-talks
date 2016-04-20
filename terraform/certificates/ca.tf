@@ -31,6 +31,7 @@ resource "null_resource" "generate_ca_certs" {
 
     provisioner "local-exec" {
         command = <<EOF
+mkdir -p ${path.module}/ca
 echo "${tls_private_key.ca_key.private_key_pem}" > ${path.module}/ca/key.pem
 echo "${tls_self_signed_cert.ca_cert.cert_pem}"  > ${path.module}/ca/cert.pem
 EOF

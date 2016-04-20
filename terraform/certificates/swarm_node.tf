@@ -36,6 +36,7 @@ resource "null_resource" "generate_swarm_node_certs" {
 
     provisioner "local-exec" {
         command = <<EOF
+mkdir -p ${path.module}/node
 echo "${tls_self_signed_cert.ca_cert.cert_pem}"            > ${path.module}/node/ca.pem
 echo "${tls_private_key.swarm_node_key.private_key_pem}"   > ${path.module}/node/key.pem
 echo "${tls_locally_signed_cert.swarm_node_cert.cert_pem}" > ${path.module}/node/cert.pem
