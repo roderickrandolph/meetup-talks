@@ -11,5 +11,5 @@ variable "containers_port" {
 }
 
 variable "containers_host_port" {
-    default = 8080
+    default = 8082
 }
