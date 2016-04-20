@@ -1,5 +1,5 @@
 .terraform
 *.tfstate*
 *.pem
-tf.plan
+*.plan
 node_modules
