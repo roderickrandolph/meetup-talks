@@ -9,7 +9,7 @@ AWS.config.update({
     endpoint: "https://dynamodb.us-east-1.amazonaws.com"
 });
 
-var APP_VERSION         = "0.0.3";
+var APP_VERSION         = "0.0.4";
 var HOST_IP             = ip.address();
 var DYNAMODB_TABLE_NAME = "TripleRTracker";
 
