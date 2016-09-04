@@ -1,0 +1,20 @@
+{
+  "name": "tripler-tracker",
+  "version": "0.0.4",
+  "description": "Track the number of hits to a server host",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "https://github.com/roderickrandolph/tripler-tracker",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.3.3",
+    "express": "^4.13.4",
+    "ip": "^1.1.2",
+    "redis": "^2.6.2",
+    "request-ip": "^1.2.2",
+    "synchronize": "^0.9.15"
+  }
+}

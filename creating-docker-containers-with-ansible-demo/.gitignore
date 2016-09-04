@@ -1,0 +1,7 @@
+.terraform
+*.tfstate*
+*.pem
+*.plan
+*.retry
+node_modules
+venv
