@@ -10,11 +10,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.3.3",
+    "body-parser": "^1.15.2",
     "express": "^4.13.4",
     "ip": "^1.1.2",
-    "redis": "^2.6.2",
-    "request-ip": "^1.2.2",
-    "synchronize": "^0.9.15"
+    "redis": "^2.6.2"
+  },
+  "devDependencies": {
+    "fakeredis": "^1.0.3",
+    "mocha": "^3.0.2",
+    "should": "^11.1.0",
+    "supertest": "^2.0.0"
   }
 }

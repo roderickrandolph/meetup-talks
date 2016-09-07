@@ -1,28 +1,21 @@
-# This should be your Ansible playbooks to provision your containers.
-# An inventory will be automatically created using the names of the services
-# from your container.yml file.
-# Add any roles or other modules you'll need to this directory too.
-# For many examples of roles, check out Ansible Galaxy: https://galaxy.ansible.com/
-#
 - hosts: app
   tasks:
-    - name: create source directory
+    - name: create sources directory
       file:
         path: /src
         state: directory
         mode: 0755
 
-    - name: copy node source
+    - name: copy sources
       copy:
         src: "{{ lookup('pipe', 'dirname `pwd`') }}/{{ item }}"
         dest: "/src/{{ item }}"
-      register: copy_node_source_results
       with_items:
         - package.json
         - app.js
 
-    - name: install npm packages
-      shell: npm install --production
-      args:
-        chdir: /src
-      when: copy_node_source_results|changed
+    - name: install app
+      npm:
+        production: yes
+        path: /src
+        state: latest

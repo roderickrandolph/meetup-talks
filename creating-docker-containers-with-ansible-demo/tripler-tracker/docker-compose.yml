@@ -5,8 +5,7 @@ services:
       context: .
     image: tripler-tracker:docker-compose
     ports:
-      - "80:80"
-      - "443:443"
+      - 8888:8888
     command: ["node", "/src/app.js"]
     links:
       - redis
@@ -14,4 +13,4 @@ services:
   redis:
     image: redis:alpine
     ports:
-      - "6379:6379"
+      - 6379:6379

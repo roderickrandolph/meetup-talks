@@ -1,0 +1,38 @@
+#!groovy
+
+def projectDir = 'creating-docker-containers-with-ansible-demo/tripler-tracker'
+
+stage 'Build'
+node {
+  deleteDir()
+  checkout scm
+  dir(projectDir) {
+    sh 'ansible-container build'
+  }
+  stash 'sources'
+}
+
+stage 'Test'
+node('nodejs') {
+  deleteDir()
+  unstash 'sources'
+  dir(projectDir) {
+    try {
+      sh 'ansible-container run --detached --production'
+      sh 'make test'
+    } catch (e) {
+      throw e
+    } finally {
+      sh 'ansible-container stop'
+    }
+  }
+}
+
+stage 'Release'
+node {
+  deleteDir()
+  unstash 'sources'
+  dir(projectDir) {
+    sh 'ansible-container push'
+  }
+}

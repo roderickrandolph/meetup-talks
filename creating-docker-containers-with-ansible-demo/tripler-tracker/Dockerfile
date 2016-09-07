@@ -5,5 +5,5 @@ RUN cd /src \
     && npm install --production
 COPY app.js /src
 
-EXPOSE 80 443
+EXPOSE 8888
 CMD ["node", "/src/app.js"]
