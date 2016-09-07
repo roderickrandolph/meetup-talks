@@ -13,4 +13,10 @@ services:
     ports:
       - 6379:6379
 
+  tripler-data:
+    image: busybox
+    volumes:
+      - ${PWD}/../tripler-tracker:/ansible-container
+      - /var/run/docker.sock:/var/run/docker.sock
+
 registries: {}
