@@ -1,0 +1,133 @@
+version: "1"
+services:
+  master:
+    image: java:8-jre
+    ports:
+      - 8080:8080
+    environment:
+      JENKINS_HOME: /var/lib/jenkins
+    entrypoint:
+      - /usr/bin/dumb-init
+      - /usr/bin/java
+      - -Djava.awt.headless=true
+      - -Djenkins.install.runSetupWizard=false
+      - -jar
+      - /usr/share/jenkins/jenkins.war
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  slave-nodejs012:
+    image: java:8-jre
+    entrypoint:
+      - /usr/bin/dumb-init
+      - /usr/bin/java
+      - -jar
+      - /opt/swarm-client.jar
+    command:
+      - -name=nodejs012
+      - -disableClientsUniqueId
+      - -master=http://master:8080
+      - -username=admin
+      - -password=admin
+      - -labels=nodejs
+      - -labels=nodejs012
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    links:
+      - master
+  slave-nodejs4x:
+    image: java:8-jre
+    entrypoint:
+      - /usr/bin/dumb-init
+      - /usr/bin/java
+      - -jar
+      - /opt/swarm-client.jar
+    command:
+      - -name=nodejs4x
+      - -disableClientsUniqueId
+      - -master=http://master:8080
+      - -username=admin
+      - -password=admin
+      - -labels=nodejs
+      - -labels=nodejs4x
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    links:
+      - master
+  slave-ruby22:
+    image: java:8-jre
+    entrypoint:
+      - /usr/bin/dumb-init
+      - /usr/bin/java
+      - -jar
+      - /opt/swarm-client.jar
+    command:
+      - -name=ruby22
+      - -disableClientsUniqueId
+      - -master=http://master:8080
+      - -username=admin
+      - -password=admin
+      - -labels=ruby
+      - -labels=ruby22
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    links:
+      - master
+  slave-ruby23:
+    image: java:8-jre
+    entrypoint:
+      - /usr/bin/dumb-init
+      - /usr/bin/java
+      - -jar
+      - /opt/swarm-client.jar
+    command:
+      - -name=ruby23
+      - -disableClientsUniqueId
+      - -master=http://master:8080
+      - -username=admin
+      - -password=admin
+      - -labels=ruby
+      - -labels=ruby23
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    links:
+      - master
+  slave-python2:
+    image: java:8-jre
+    entrypoint:
+      - /usr/bin/dumb-init
+      - /usr/bin/java
+      - -jar
+      - /opt/swarm-client.jar
+    command:
+      - -name=python2
+      - -disableClientsUniqueId
+      - -master=http://master:8080
+      - -username=admin
+      - -password=admin
+      - -labels=python
+      - -labels=python2
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    links:
+      - master
+  slave-java7:
+    image: java:7-jre
+    entrypoint:
+      - /usr/bin/dumb-init
+      - /usr/bin/java
+      - -jar
+      - /opt/swarm-client.jar
+    command:
+      - -name=java7
+      - -disableClientsUniqueId
+      - -master=http://master:8080
+      - -username=admin
+      - -password=admin
+      - -labels=java
+      - -labels=java7
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    links:
+      - master
+
+registries: {}

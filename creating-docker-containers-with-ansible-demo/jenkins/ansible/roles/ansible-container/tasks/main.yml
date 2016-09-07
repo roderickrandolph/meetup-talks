@@ -1,0 +1,32 @@
+---
+- name: install package dependencies
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - python-setuptools
+    - git
+
+- name: install pip
+  easy_install:
+    name: pip
+    state: present
+
+- name: ensure latest pip and setuptools are installed
+  pip:
+    name: "{{item}}"
+    state: latest
+  with_items:
+    - pip
+    - setuptools
+
+- name: clone ansible-container repo
+  git:
+    repo: https://github.com/ansible/ansible-container.git
+    dest: /opt/ansible-container
+
+- name: install ansible-container
+  shell: python setup.py install
+  args:
+    chdir: /opt/ansible-container
+    creates: /usr/local/bin/ansible-container
