@@ -3,11 +3,11 @@
 def projectDir = 'creating-docker-containers-with-ansible-demo/tripler-tracker'
 
 stage 'Build'
-node {
+node('docker-for-mac') {
   deleteDir()
   checkout scm
   dir(projectDir) {
-    sh 'ansible-container build'
+    sh 'ansible-container build -e ANSIBLE_FORCE_COLOR=1'
   }
   stash 'sources'
 }
@@ -29,7 +29,7 @@ node('nodejs') {
 }
 
 stage 'Release'
-node {
+node('docker-for-mac') {
   deleteDir()
   unstash 'sources'
   dir(projectDir) {
