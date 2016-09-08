@@ -6,7 +6,9 @@
 
 ```
 git clone git@github.com:roderickrandolph/meetup-talks.git
-cd meetup-talks/creating-docker-containers-with-ansible-demo/tripler-tracker
+cd meetup-talks/creating-docker-containers-with-ansible-demo
+atom .
+cd tripler-tracker
 ```
 
 ## Demo using Dockerfile and Docker Compose
@@ -14,6 +16,7 @@ cd meetup-talks/creating-docker-containers-with-ansible-demo/tripler-tracker
 Explain app purpose and files
 
 ```
+cat app.js
 cat Dockerfile
 cat docker-compose.yml
 ```
@@ -39,6 +42,8 @@ Stop the app
 ## Convert app to ansible-container
 
 ### Install Ansible Container
+
+Open new terminal window
 
 #### Via pip
 
@@ -130,13 +135,13 @@ Build using ansible-container
 
 `ansible-container build`
 
-Compare the docker images (sizes)
-
-`docker images "tripler*"`
-
 Build it again to check for idempotency (and with color)
 
 `ansible-container build -e ANSIBLE_FORCE_COLOR=1`
+
+Compare the docker images (sizes)
+
+`docker images "tripler*"`
 
 Run the app
 
@@ -165,7 +170,10 @@ git push
 
 Let's build Jenkins stack (with some debugging)
 
-`ansible-container build -e ANSIBLE_FORCE_COLOR=1 -- -vv`
+```
+ansible-container build -e ANSIBLE_FORCE_COLOR=1 -- -vv
+ansible-galaxy install -r requirements.yml -p ansible/roles
+```
 
 Explain jenkins setup (1 master + 6 slaves), files, galaxy roles
 

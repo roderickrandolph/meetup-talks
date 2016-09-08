@@ -1,11 +1,5 @@
+---
  # from galaxy
  - src: geerlingguy.jenkins
-   path: ansible/roles
-
- # from galaxy
  - src: geerlingguy.ruby
-   path: ansible/roles
-
- # from galaxy
  - src: geerlingguy.nodejs
-   path: ansible/roles

@@ -7,3 +7,5 @@ node_modules
 venv
 *.jar
 workspace
+*.log
+*.pid

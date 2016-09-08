@@ -46,6 +46,16 @@
         state: present
       when: "'ruby' in inventory_hostname"
 
+    - name: set ownership permissions on jenkins_home
+      file:
+        path: "{{jenkins_home}}"
+        state: directory
+        recurse: yes
+        owner: jenkins
+        group: jenkins
+      when: inventory_hostname == 'master'
+      ignore_errors: yes
+
   roles:
     - role: docker
 

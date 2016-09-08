@@ -31,14 +31,15 @@ function start() {
     -username=admin \
     -password=admin \
     -labels=docker \
-    -labels=nodejs > workspace/slave.log 2>&1 &
-  echo $! > workspace/.slave.pid
+    -labels=nodejs > slave.log 2>&1 &
+  echo $! > slave.pid
 }
 
 function stop() {
-  PID=`cat workspace/.slave.pid`
+  PID=`cat slave.pid`
 	if [ "$PID" != "" ]; then
 		kill $PID
+    echo > slave.pid
 	fi
 	echo "Stopping slave..."
 	exit 0
