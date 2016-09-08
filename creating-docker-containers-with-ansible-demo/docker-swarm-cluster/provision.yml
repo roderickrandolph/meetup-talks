@@ -1,0 +1,56 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+    - name: docker info
+      shell: docker info
+      become: yes
+      register: docker_info_results
+
+    - group_by:
+        key: swarm_inactive
+      when: "'Swarm: inactive' in docker_info_results.stdout"
+
+    - group_by:
+        key: swarm_active
+      when: "'Swarm: active' in docker_info_results.stdout"
+
+- hosts: swarm_active:swarm_inactive
+  gather_facts: no
+  tasks:
+    - name: retrieve token from active
+      shell: docker swarm join-token --quiet manager
+      become: yes
+      register: swarm_join_token_results
+      run_once: true
+      when: groups.swarm_active is defined and inventory_hostname == groups['swarm_active'][0]
+
+    - name: set swarm manager token
+      set_fact:
+        swarm_manager_token: "{{swarm_join_token_results.stdout}}"
+      when: swarm_join_token_results.stdout is defined
+      run_once: true
+
+    - name: start a new swarm
+      shell: docker swarm init
+      become: yes
+      register: swarm_init_results
+      run_once: true
+      when: swarm_manager_token is not defined and inventory_hostname == groups['swarm_inactive'][0]
+
+    - name: retrieve token from inactive
+      shell: docker swarm join-token --quiet manager
+      become: yes
+      register: swarm_join_token2_results
+      run_once: true
+      when: swarm_init_results|changed and inventory_hostname == groups['swarm_inactive'][0]
+
+    - name: set swarm manager token
+      set_fact:
+        swarm_manager_token: "{{swarm_join_token2_results.stdout}}"
+      run_once: true
+      when: swarm_join_token2_results.stdout is defined
+
+    - debug:
+        var: swarm_manager_token
+      run_once: true
