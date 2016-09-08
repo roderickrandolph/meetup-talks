@@ -4,8 +4,10 @@ services:
     image: java:8-jre
     ports:
       - 8080:8080
+      - 50000:50000
     environment:
       JENKINS_HOME: /var/lib/jenkins
+      JENKINS_SLAVE_AGENT_PORT: 50000
     entrypoint:
       - /usr/bin/dumb-init
       - /usr/bin/java
@@ -15,6 +17,7 @@ services:
       - /usr/share/jenkins/jenkins.war
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - jenkins_master:/var/lib/jenkins
   slave-nodejs012:
     image: java:8-jre
     entrypoint:
@@ -30,6 +33,8 @@ services:
       - -password=admin
       - -labels=nodejs
       - -labels=nodejs012
+      - -labels=docker
+      - -labels=dind
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     links:
@@ -49,6 +54,8 @@ services:
       - -password=admin
       - -labels=nodejs
       - -labels=nodejs4x
+      - -labels=docker
+      - -labels=dind
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     links:
@@ -68,6 +75,8 @@ services:
       - -password=admin
       - -labels=ruby
       - -labels=ruby22
+      - -labels=docker
+      - -labels=dind
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     links:
@@ -87,6 +96,8 @@ services:
       - -password=admin
       - -labels=ruby
       - -labels=ruby23
+      - -labels=docker
+      - -labels=dind
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     links:
@@ -106,6 +117,8 @@ services:
       - -password=admin
       - -labels=python
       - -labels=python2
+      - -labels=docker
+      - -labels=dind
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     links:
@@ -125,6 +138,8 @@ services:
       - -password=admin
       - -labels=java
       - -labels=java7
+      - -labels=docker
+      - -labels=dind
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     links:
