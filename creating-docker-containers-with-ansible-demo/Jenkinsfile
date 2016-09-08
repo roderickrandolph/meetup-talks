@@ -8,7 +8,10 @@ node('docker-for-mac') {
   checkout scm
   dir(appDir) {
     sh '''
+      virtualenv venv
       source venv/bin/activate
+      git clone https://github.com/ansible/ansible-container.git
+      python ansible-container/setup.py install
       ansible-container build -e ANSIBLE_FORCE_COLOR=1
     '''
   }
@@ -42,6 +45,9 @@ node('docker-for-mac') {
   deleteDir()
   unstash 'sources'
   dir(appDir) {
-    sh 'ansible-container push'
+    sh '''
+      source venv/bin/activate
+      ansible-container push
+    '''
   }
 }
