@@ -10,9 +10,12 @@ node('docker && nodejs') {
     stage 'Build'
     dir(appDir) {
       // clean up older images
-      sh 'docker ps -q -f status=exited | uniq | xargs docker rm -f'
-      sh 'docker images -q "redis*" | uniq | xargs docker rmi -f'
-      sh 'docker images -q "tripler*" | uniq | xargs docker rmi -f'
+      sh '''#!/bin/sh
+        [ $(uname -s) != "Darwin" ] && alias xargs="xargs --no-run-if-empty"
+        docker ps -q -f status=exited | uniq | xargs docker rm -f
+        docker images -q "redis*" | uniq | xargs docker rmi -f
+        docker images -q "tripler*" | uniq | xargs docker rmi -f
+      '''
       // build a fresh image
       sh 'ansible-container build -e ANSIBLE_FORCE_COLOR=1'
     }
