@@ -5,3 +5,5 @@
 *.retry
 node_modules
 venv
+*.jar
+workspace

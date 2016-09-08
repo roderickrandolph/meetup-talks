@@ -1,53 +1,37 @@
 #!groovy
 
-def appDir = 'tripler-tracker'
+def appDir = 'creating-docker-containers-with-ansible-demo/tripler-tracker'
 
-stage 'Build'
-node('docker-for-mac') {
-  deleteDir()
-  checkout scm
-  dir(appDir) {
-    sh '''
-      virtualenv venv
-      source venv/bin/activate
-      git clone https://github.com/ansible/ansible-container.git
-      python ansible-container/setup.py install
-      ansible-container build -e ANSIBLE_FORCE_COLOR=1
-    '''
-  }
-  stash 'sources'
-}
+node('docker && nodejs') {
+  wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
+    stage 'Checkout'
+    checkout scm
 
-stage 'Test'
-node('nodejs') {
-  deleteDir()
-  unstash 'sources'
-  dir(appDir) {
-    try {
-      sh '''
-        source venv/bin/activate
-        ansible-container run --detached --production
-        make test
-      '''
-    } catch (e) {
-      throw e
-    } finally {
-      sh '''
-        source venv/bin/activate
-        ansible-container stop
-      '''
+    stage 'Build'
+    dir(appDir) {
+      // clean up older images
+      sh 'docker ps -q -f status=exited | uniq | xargs docker rm -f'
+      sh 'docker images -q "redis*" | uniq | xargs docker rmi -f'
+      sh 'docker images -q "tripler*" | uniq | xargs docker rmi -f'
+      // build a fresh image
+      sh 'ansible-container build -e ANSIBLE_FORCE_COLOR=1'
     }
-  }
-}
 
-stage 'Release'
-node('docker-for-mac') {
-  deleteDir()
-  unstash 'sources'
-  dir(appDir) {
-    sh '''
-      source venv/bin/activate
-      ansible-container push
-    '''
+    stage 'Test'
+    dir(appDir) {
+      try {
+        sh 'ansible-container run --detached --production'
+        sh 'make test'
+      } catch (e) {
+        throw e
+      } finally {
+        sh 'ansible-container stop'
+      }
+    }
+
+    stage 'Release'
+    dir(appDir) {
+      sh 'ansible-container push'
+    }
   }
 }
