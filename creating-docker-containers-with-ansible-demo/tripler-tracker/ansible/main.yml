@@ -1,0 +1,22 @@
+---
+- hosts: app
+  tasks:
+    - name: create source directory
+      file:
+        path: /src
+        state: directory
+        mode: 0755
+
+    - name: copy source code
+      copy:
+        src: "{{lookup('pipe', 'dirname `pwd`')}}/{{item}}"
+        dest: /src/{{item}}
+      with_items:
+        - package.json
+        - app.js
+
+    - name: install npm packages
+      npm:
+        path: /src
+        state: latest
+        production: yes
