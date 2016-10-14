@@ -6,7 +6,7 @@
 
 ```
 git clone git@github.com:roderickrandolph/meetup-talks.git
-cd meetup-talks/creating-docker-containers-with-ansible-demo
+cd meetup-talks/creating-docker-containers-with-ansible
 atom .
 cd tripler-tracker
 ```

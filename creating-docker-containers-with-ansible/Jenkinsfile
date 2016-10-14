@@ -1,6 +1,6 @@
 #!groovy
 
-def appDir = 'creating-docker-containers-with-ansible-demo/tripler-tracker'
+def appDir = 'creating-docker-containers-with-ansible/tripler-tracker'
 
 node('docker && nodejs') {
   wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
