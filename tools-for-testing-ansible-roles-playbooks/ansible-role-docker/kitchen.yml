@@ -1,0 +1,25 @@
+---
+driver:
+  name: ec2
+  instance_type: m3.medium
+
+provisioner:
+  name: ansible_playbook
+  require_chef_for_busser: false
+  ansible_verbose: true
+  hosts: all
+
+platforms:
+  - name: ubuntu-16.04
+    driver:
+      image_id: ami-077b0e78
+
+  - name: centos-7
+    driver:
+      image_id: ami-9887c6e7
+
+suites:
+  - name: default
+
+verifier:
+  name: inspec
