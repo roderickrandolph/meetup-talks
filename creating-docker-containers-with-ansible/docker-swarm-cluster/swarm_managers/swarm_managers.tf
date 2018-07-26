@@ -13,7 +13,8 @@ resource "aws_instance" "swarm_manager" {
   key_name               = "butterfinger"
 
   tags {
-    Name = "swarm-manager${count.index}"
+    Name = "manager${count.index}"
+    Role = "docker_swarm_manager"
   }
 }
 

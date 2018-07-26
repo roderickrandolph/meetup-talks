@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: ec2_tag_Role_docker_swarm_manager
   gather_facts: no
   tasks:
     - name: docker info
